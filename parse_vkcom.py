@@ -56,6 +56,7 @@ def getImageLink(alter_links_dict):
 	level_list=['w', 'z', 'y', 'x', 'r', 'q', 'p', 'o', 'm', 's']
 	for w in level_list:
 		if w in alter_links_dict:
+			print(alter_links_dict[w][0])
 			return alter_links_dict[w][0]
 			break
 
@@ -252,14 +253,14 @@ class NewSection():
 		if tag.name=='figure':
 			images=tag.find_all('img')
 			alter_links=tag.find('div',{'class':'article_object_sizer_wrap'})
-			if alter_links!=None:
-				alter_links_dict=json.loads(alter_links['data-sizes'].replace(r'\/','/'))[0]
-				new_link=getImageLink(alter_links_dict)
-				# print(new_link)
-				# imageLoad(new_link,'.\\images')
-			else:
-				new_link=None
-			for i in images:
+			for index,i in enumerate(images):
+				if alter_links!=None:
+					alter_links_dict=json.loads(alter_links['data-sizes'].replace(r'\/','/'))[index]
+					new_link=getImageLink(alter_links_dict)
+					# print(new_link)
+					# imageLoad(new_link,'.\\images')
+				else:
+					new_link=None
 				if new_link!=None: i['src']=new_link
 				if include_images:
 					# если включен режим с добавлением картинок в статью
@@ -391,5 +392,5 @@ def main(url_or_list,include_images=True):
 		getArticle(url,include_images=include_images)
 
 if __name__=="__main__":
-	url_or_list=[f"https://vk.com/@flab20-socialnye-seti-kak-nepodemnyi-gruz"]
+	url_or_list=f"https://vk.com/@flab20"
 	main(url_or_list,include_images=True)
