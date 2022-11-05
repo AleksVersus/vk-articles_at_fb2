@@ -1,9 +1,16 @@
-# данный скрипт парсит все открытые статьи с liveinternet
+# данный скрипт парсит открытые статьи с vk.com и превращает их в fb2 документы
 import sys, os, re, json
 import random, datetime
 import requests
 from bs4 import BeautifulSoup
 from bs4 import element as bs_el
+
+import time # модуль time нужен, чтобы сдедать задержку после загрузки страницы
+from selenium import webdriver # импортируем из селениума webdriver, который работает с браузером
+from selenium.webdriver.common.by import By # импортируем константы из webdriver для удобства
+from selenium.webdriver.chrome.options import Options # импортируем класс для удобства настройки опций
+from selenium.webdriver.chrome.service import Service # импортируем класс Service, дабы передавать экземпляр класса драйвера в объект браузера
+import base64
 
 def getDate(**args):
 	when=datetime.datetime.now()
@@ -52,6 +59,38 @@ def getImageLink(alter_links_dict):
 			return alter_links_dict[w][0]
 			break
 
+def getImageName(url):
+	letters='ABCDEFGHIJKLOMNPQRSTUVWXYZ_1234567890'
+	try:
+		return url.split('?')[0].split('/')[-1].split('.')[0]
+	except:
+		return ''.join(random.choice(letters) for i in range(16))
+
+def getImageAsBase64(url, image_name=None):
+	print("Загрузка изображения, немного подождите.")
+	awaiting=[0.11, 0.13, 0.17, 0.19, 0.37, 0.39, 0.41, 0.57, 1, 2, 3]
+	browser_options = Options()		# создаём объект опций
+	browser_options.headless=True	# скрываем окно браузера
+	browser_service=Service('.\\.gd\\chromedriver.exe') # путь к драйверу в экземпляр класса
+	# генерируем объект браузер
+	browser_driver = webdriver.Chrome(service=browser_service, options=browser_options)
+	# открываем страницу и даём ей время прогрузиться
+	browser_driver.get(url)
+	time.sleep(3+random.choice(awaiting))
+	# получаем изображение в виде последовательности байтов
+	screenshot_of_image=browser_driver.find_element(By.XPATH,'/html/body/img').screenshot_as_png
+	# кодируем в base64
+	encoded_image = base64.b64encode(screenshot_of_image)
+	# конвертим в строку
+	screenshot_as_string=encoded_image.decode('utf-8')
+	# сохраняяем файл
+	if image_name==None: image_name=getImageName(url)
+	print(f"Изображение {image_name} сохранено в папку images.")
+	with open(f'.\\images\\{image_name}.base64','w',encoding='utf-8') as file:
+		file.write(screenshot_as_string)
+	browser_driver.quit()
+	return screenshot_as_string
+
 class NewSection():
 	"""
 		NewSection — это класс, который я так назвал для удобства вызова
@@ -70,6 +109,7 @@ class NewSection():
 		# сразу назначаем title_id и title, если они переданы
 		self.title_id=(args['title_id'] if "title_id" in args else "")
 		self.title=(args['title']if "title" in args else "")
+		self.images={} # словарь изображений, в который изображения помещаются в виде base64
 		# после того, как задали все свойства, конвертим исходник с помощью встроенных функций
 		self.sourceConvert(self.source)
 	def sourceToBody(self, set_strings):
@@ -144,19 +184,28 @@ class NewSection():
 		if len(string_list)>0:
 			#print(f"Split [5]: create NewSection from {len(string_list)} strings.")
 			self.sections.append(NewSection(string_list))
-	def getFB2(self):
+	def getFB2(self,include_images=True):
 		text=""
 		text+=f'<section id="avs-{self.title_id}">\n'
 		if self.title!="": text+=f'<title><p>{self.title}</p></title>'
 		if len(self.sections)!=0:
 			for i in self.sections:
-				text+=i.getFB2()
+				text+=i.getFB2(include_images=include_images)
 		elif len(self.body)!=0:
 			for tag in self.body:
-				text+=self.convertTag(tag)
+				text+=self.convertTag(tag,include_images=include_images)
 		else:
 			text+='  <empty-line/>\n'
 		text+="\n</section>\n"
+		return text
+	def getImages(self):
+		text=""
+		for key in self.images:
+			text+=f'<binary id="{key}.png" content-type="image/png">'
+			text+=self.images[key]
+			text+="</binary>\n"
+		for section in self.sections:
+			text+=section.getImages()
 		return text
 	def getTopLevel(self, set_strings):
 		# на вход принимаем набор строк
@@ -174,7 +223,7 @@ class NewSection():
 					top_level_head=tag.name
 		# возвращаем tagname заголовка верхнего уровня и сколько он раз встречается и где.
 		return top_level_head, levels_count
-	def convertTag(self, tag):
+	def convertTag(self, tag, include_images=True):
 		text=""
 		if tag.name=='p':
 			text+="<p>"
@@ -206,13 +255,19 @@ class NewSection():
 			if alter_links!=None:
 				alter_links_dict=json.loads(alter_links['data-sizes'].replace(r'\/','/'))[0]
 				new_link=getImageLink(alter_links_dict)
-				print(new_link)
-				#imageLoad(new_link,'.\\images')
+				# print(new_link)
+				# imageLoad(new_link,'.\\images')
 			else:
 				new_link=None
 			for i in images:
 				if new_link!=None: i['src']=new_link
-				text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">{i["alt"]}</a></p>\n'
+				if include_images:
+					# если включен режим с добавлением картинок в статью
+					image_name=getImageName(i['src']) # получаем уникальное имя картинки
+					text+=f'<image l:href="#{image_name}.png"/>' # вставляем её вывод в текст
+					self.images[image_name]=getImageAsBase64(i['src'],image_name=image_name) # генерируем base64 картинки и помещаем в словарь
+				else:
+					text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">{i["alt"]}</a></p>\n'
 			iframes=tag.find_all('iframe')
 			for i in iframes:
 				text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">Видео</a></p>\n'
@@ -237,7 +292,7 @@ class NewSection():
 		result += ''.join(random.choice(letters) for i in range(12))
 		return result
 
-def getArticle(url):
+def getArticle(url,include_images=True):
 	text=""
 	page=""
 	file_name=url.split('@')[1]
@@ -245,14 +300,14 @@ def getArticle(url):
 	# print(file_name)
 	# извлекаем страницу. Данный кусочек нужен, чтобы не делать к серверу миллион запросов, если возникнет ошибка
 	# а работать с уже скачанной страницей
-	if os.path.isfile(f'.\\images\\{file_name}.html'):
-		print('Из файла')
-		with open(f'.\\images\\{file_name}.html','r',encoding='utf-8') as file:
+	if os.path.isfile(f'.\\sources\\{file_name}.html'):
+		print(f'Исходник статьи {file_name} уже скачан. Забираем из исходника.')
+		with open(f'.\\sources\\{file_name}.html','r',encoding='utf-8') as file:
 			page=file.read()
 	else:
-		print('Загружаем с сайта')
+		print(f'Загружаем с сайта {file_name}.')
 		page=requests.get(url).text
-		with open(f'.\\images\\{file_name}.html','w',encoding='utf-8') as file:
+		with open(f'.\\sources\\{file_name}.html','w',encoding='utf-8') as file:
 			file.write(page)
 
 	soup=BeautifulSoup(page,"html.parser")
@@ -263,7 +318,7 @@ def getArticle(url):
 	author=body.find('div',{'class':'articleView__ownerName'}).text
 	# -------------------- информация о книге -------------------------
 	fb2_sections=NewSection(article.contents)
-	fb2output=fb2_sections.getFB2()
+	fb2output=fb2_sections.getFB2(include_images=include_images)
 	fb2_export_text=""
 	header=fb2_sections.title
 	date_time=fb2_sections.date_time
@@ -299,6 +354,8 @@ def getArticle(url):
 	fb2_export_text+=f'  </document-info>\n'
 	fb2_export_text+=f' </description>\n'
 	fb2_export_text+=f' <body>{fb2output}</body>\n'
+	if include_images:
+		fb2_export_text+=fb2_sections.getImages()
 	fb2_export_text+=f'</FictionBook>\n'
 		
 	# print(f"Автор: {author}\nЗаголовок: {header}\nИдентификатор заголовка: {header_id}")
@@ -306,7 +363,17 @@ def getArticle(url):
 	with open(f'.\\articles\\{file_name}.fb2','w',encoding='utf-8') as file:
 		file.write(fb2_export_text)
 
-def main(url_or_list):
+def main(url_or_list,include_images=True):
+	"""
+		Функция принимает на вход url страницы, содержащей список статей, например https://vk.com/@flab20,
+		или список url-адресов непосредственно статей, которые необходимо сконвертировать.
+
+		Полученный список адресов на статьи прогоняет циклом и передаёт по одному функции getArticle(),
+		которая в свою очередь и создаёт нужные fb2-документы
+
+		Параметр include_images определяет, будут ли в fb2-документ включены изображения из исходной статьи,
+		по умолчанию True — изображения будут включены в fb2-документ
+	"""
 	if type(url_or_list)==str:
 		# если мы передаём не список адресов, а один адрес, значит нужно получить список адресов
 		page=requests.get(url_or_list).text # запрашиваем страницу со списком статей
@@ -321,8 +388,8 @@ def main(url_or_list):
 			else:
 				url_or_list.append(link['href'])
 	for url in url_or_list:
-		getArticle(url)
+		getArticle(url,include_images=include_images)
 
 if __name__=="__main__":
 	url_or_list=[f"https://vk.com/@flab20-socialnye-seti-kak-nepodemnyi-gruz"]
-	main(url_or_list)
+	main(url_or_list,include_images=True)
