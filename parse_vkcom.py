@@ -10,6 +10,7 @@ from selenium import webdriver # импортируем из селениума 
 from selenium.webdriver.common.by import By # импортируем константы из webdriver для удобства
 from selenium.webdriver.chrome.options import Options # импортируем класс для удобства настройки опций
 from selenium.webdriver.chrome.service import Service # импортируем класс Service, дабы передавать экземпляр класса драйвера в объект браузера
+from selenium.webdriver.common.action_chains import ActionChains
 import base64
 
 def getDate(**args):
@@ -30,7 +31,8 @@ def parseDate(string):
 			'янв':'01','фев':'02','мар':'03',
 			'апр':'04','май':'05','июн':'06',
 			'июл':'07','авг':'08','сен':'09',
-			'окт':'10','ноя':'11','дек':'12'
+			'окт':'10','ноя':'11','дек':'12',
+			'мая':'05'
 		}
 		day=fullZero(match.group(1),2)
 		return {'day':day, 'month':month[match.group(2)]}
@@ -54,9 +56,11 @@ def imageLoad(image_url,folder_path):
 
 def getImageLink(alter_links_dict):
 	level_list=['w', 'z', 'y', 'x', 'r', 'q', 'p', 'o', 'm', 's']
+	# print("Попытка подобрать изображение")
+	# print(alter_links_dict)
 	for w in level_list:
 		if w in alter_links_dict:
-			print(alter_links_dict[w][0])
+			# print(alter_links_dict[w][0])
 			return alter_links_dict[w][0]
 			break
 
@@ -68,28 +72,34 @@ def getImageName(url):
 		return ''.join(random.choice(letters) for i in range(16))
 
 def getImageAsBase64(url, image_name=None):
-	print("Загрузка изображения, немного подождите.")
-	awaiting=[0.11, 0.13, 0.17, 0.19, 0.37, 0.39, 0.41, 0.57, 1, 2, 3]
-	browser_options = Options()		# создаём объект опций
-	browser_options.headless=True	# скрываем окно браузера
-	browser_service=Service('.\\.gd\\chromedriver.exe') # путь к драйверу в экземпляр класса
-	# генерируем объект браузер
-	browser_driver = webdriver.Chrome(service=browser_service, options=browser_options)
-	# открываем страницу и даём ей время прогрузиться
-	browser_driver.get(url)
-	time.sleep(3+random.choice(awaiting))
-	# получаем изображение в виде последовательности байтов
-	screenshot_of_image=browser_driver.find_element(By.XPATH,'/html/body/img').screenshot_as_png
-	# кодируем в base64
-	encoded_image = base64.b64encode(screenshot_of_image)
-	# конвертим в строку
-	screenshot_as_string=encoded_image.decode('utf-8')
-	# сохраняяем файл
 	if image_name==None: image_name=getImageName(url)
-	print(f"Изображение {image_name} сохранено в папку images.")
-	with open(f'.\\images\\{image_name}.base64','w',encoding='utf-8') as file:
-		file.write(screenshot_as_string)
-	browser_driver.quit()
+	if os.path.isfile(f'.\\images\\{image_name}.base64'):
+		with open(f'.\\images\\{image_name}.base64') as file:
+			screenshot_as_string=file.read()
+	else:
+		print("Загрузка изображения, немного подождите.")
+		awaiting=[0.11, 0.13, 0.17, 0.19, 0.37, 0.39, 0.41, 0.57, 1, 2, 3]
+		browser_options = Options()		# создаём объект опций
+		browser_options.headless=True	# скрываем окно браузера
+		browser_options.add_argument("window-size=1920,1080")
+		browser_service=Service('.\\.gd\\chromedriver.exe') # путь к драйверу в экземпляр класса
+		# генерируем объект браузер
+		browser_driver = webdriver.Chrome(service=browser_service, options=browser_options)
+		# открываем страницу и даём ей время прогрузиться
+		browser_driver.get(url)
+		time.sleep(3+random.choice(awaiting))
+		# получаем изображение в виде последовательности байтов
+		screenshot_of_image=browser_driver.find_element(By.XPATH,'/html/body/img').screenshot_as_png
+		# кодируем в base64
+		encoded_image = base64.b64encode(screenshot_of_image)
+		# конвертим в строку
+		screenshot_as_string=encoded_image.decode('utf-8')
+		# сохраняяем файл
+		print(f"Изображение {image_name} сохранено в папку images.")
+		with open(f'.\\images\\{image_name}.base64','w',encoding='utf-8') as file:
+			file.write(screenshot_as_string)
+		browser_driver.close()
+		browser_driver.quit()
 	return screenshot_as_string
 
 class NewSection():
@@ -253,6 +263,7 @@ class NewSection():
 		if tag.name=='figure':
 			images=tag.find_all('img')
 			alter_links=tag.find('div',{'class':'article_object_sizer_wrap'})
+			if alter_links==None: alter_links=tag.find('div',{'class':'article_photo_carousel'})
 			for index,i in enumerate(images):
 				if alter_links!=None:
 					alter_links_dict=json.loads(alter_links['data-sizes'].replace(r'\/','/'))[index]
@@ -265,7 +276,7 @@ class NewSection():
 				if include_images:
 					# если включен режим с добавлением картинок в статью
 					image_name=getImageName(i['src']) # получаем уникальное имя картинки
-					text+=f'<image l:href="#{image_name}.png"/>' # вставляем её вывод в текст
+					text+=f'<image l:href="#{image_name}.png"/>\n' # вставляем её вывод в текст
 					self.images[image_name]=getImageAsBase64(i['src'],image_name=image_name) # генерируем base64 картинки и помещаем в словарь
 				else:
 					text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">{i["alt"]}</a></p>\n'
@@ -274,13 +285,13 @@ class NewSection():
 				text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">Видео</a></p>\n'
 			text+=f'<p><emphasis>{tag.figcaption.text}</emphasis></p>\n'
 		if tag.name=='a':
-			text+=f'<a l:href="{tag["href"]}">'
+			if 'href' in tag: text+=f'<a l:href="{tag["href"]}">'
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
 					text+=self.convertTag(el)
 				else:
 					text+=el.text
-			text+='</a>'
+			if 'href' in tag: text+='</a>'
 		return text
 	def rndID(self, **args):
 		args['mode']=(args['mode'] if 'mode' in args else '')
@@ -292,6 +303,42 @@ class NewSection():
 		result += ''.join(random.choice(letters) for i in range(4))+'-'
 		result += ''.join(random.choice(letters) for i in range(12))
 		return result
+
+def getArticlesListPage(url):
+	browser_options = Options()		# создаём объект опций
+	browser_options.headless=True	# скрываем окно браузера
+	browser_service=Service('.\\.gd\\chromedriver.exe') # путь к драйверу в экземпляр класса
+	browser_driver = webdriver.Chrome(service=browser_service, options=browser_options)
+	browser_driver.get(url)
+	print("Пытаемся получить страницу с полным списком статей. Пожалуйста, подождите. Это может занять некоторое время")
+	time.sleep(10)
+	prev_last_articles=None
+	while True:
+		find_hide_buttons = browser_driver.find_element(By.ID,'author_more_articles')
+		if find_hide_buttons:
+			# если элемент находится проматываем страницу к элементу
+			last_articles=browser_driver.find_elements(By.CLASS_NAME,'author_page_grid_article')
+			if len(last_articles)>0 and not(prev_last_articles==last_articles[-1]):
+				actions = ActionChains(browser_driver)
+				actions.move_to_element(last_articles[-1]).perform()
+				prev_last_articles=last_articles[-1]
+				time.sleep(3)
+			elif prev_last_articles==last_articles[-1]:
+				print("Не весь список статей загружен. Возможно требуется авторизация.")
+				with open(f"{url.split('@')[-1]}.html",'w',encoding='utf-8') as file:
+					file.write(browser_driver.page_source)
+				break
+			else:
+				print("Ошибка не нейден элемент.")
+				break
+		else:
+			with open(f"{url.split('@')[-1]}.html",'w',encoding='utf-8') as file:
+				file.write(browser_driver.page_source)
+			break
+	exit_pol=browser_driver.page_source
+	browser_driver.close()
+	browser_driver.quit()
+	return exit_pol
 
 def getArticle(url,include_images=True):
 	text=""
@@ -313,7 +360,11 @@ def getArticle(url,include_images=True):
 
 	soup=BeautifulSoup(page,"html.parser")
 	body=soup.body
-	article=body.select('div[class~="article_view"]')[0]
+	try:
+		article=body.select('div[class~="article_view"]')[0]
+	except:
+		print(f"На странице {url} нет статей. Проверьте div с классом 'article_view'.")
+		return None
 
 	# -------------------- информация о книге -------------------------
 	author=body.find('div',{'class':'articleView__ownerName'}).text
@@ -377,20 +428,33 @@ def main(url_or_list,include_images=True):
 	"""
 	if type(url_or_list)==str:
 		# если мы передаём не список адресов, а один адрес, значит нужно получить список адресов
-		page=requests.get(url_or_list).text # запрашиваем страницу со списком статей
+		articles_file_name=url_or_list.split('@')[-1]+'.html'
+		if os.path.isfile(articles_file_name):
+			# если страница существует, загружаем из неё
+			print("Подбираем список статей из уже сохранённой страницы.")
+			with open(articles_file_name,'r',encoding='utf-8') as file:
+				page=file.read()
+		else:
+			print("Страница со списком статей ещё не загружена.")
+			page=getArticlesListPage(url_or_list)
+		print(f'Готовим суп.')
 		# готовим суп
 		soup=BeautifulSoup(page,"html.parser")
 		body=soup.body
-		articles_links=body.find_all('a',{'class':'author-page-article__href'})
+		articles_links=body.select(f'a[href*="@{url_or_list.split("@")[-1]}"]')
 		url_or_list=[]
 		for link in articles_links:
-			if re.match(r'https://vk\.com',link['href'])==None:
-				url_or_list.append('https://vk.com'+link['href'])
-			else:
-				url_or_list.append(link['href'])
+			try:
+				if re.match(r'https://vk\.com',link['href'])==None:
+					url_or_list.append('https://vk.com'+link['href'])
+				else:
+					url_or_list.append(link['href'])
+			except:
+				print("Нет href в ссылке. ", link)
 	for url in url_or_list:
 		getArticle(url,include_images=include_images)
 
 if __name__=="__main__":
-	url_or_list=f"https://vk.com/@flab20"
+	# url_or_list=f"https://vk.com/@qsplayer"
+	url_or_list=[f"https://vk.com/@flab20-propaganda-snova-strelyaet-sebe-v-kolenku"]
 	main(url_or_list,include_images=True)
