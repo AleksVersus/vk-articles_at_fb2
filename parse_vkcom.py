@@ -23,9 +23,9 @@ def getDate(**args):
 	return time
 
 def parseDate(string):
-	print(f'parseDate: {string}')
+	# print(f'parseDate: {string}')
 	# извлекаем дату из статьи 17 окт
-	match=re.match(r'(\d+) (\w{3}) в (\d+):(\d+)',string)
+	match=re.match(r'(\d+)\s+(\w{3})\s+в\s+(\d+):(\d+)',string)
 	if match!=None:
 		month={
 			'янв':'01','фев':'02','мар':'03',
@@ -129,40 +129,40 @@ class NewSection():
 		# функция принимает на вход набор строк
 		# получаем верхний уровень заголовков и упоминания
 		top_level_head, levels_count = self.getTopLevel(set_strings)
-		#print(f"Source Convert [0]: get top level of head = {top_level_head}")
+		# print(f"Source Convert [0]: get top level of head = {top_level_head}")
 		if top_level_head!="":
 			# заголовок верхнего уровня существует
-			#print(f"Source Convert [1]: top level head is exist.")
+			# print(f"Source Convert [1]: top level head is exist.")
 			if levels_count[top_level_head][0]==1 and levels_count[top_level_head][1]==0:
 				# он один и он в верхней строке секции
-				#print(f"Source Convert [2]: top level head is one and top.")
+				# print(f"Source Convert [2]: top level head is one and top.")
 				self.title=set_strings[0].text
 				self.title_id=set_strings[0].find('span',{'class':'article_anchor_button'})['id']
 				set_strings=set_strings[1:] # режем набор строк с первого элемента, так как нулевой обработан
 				# получаем верхний уровень заголовков и упоминания
 				top_level_head, levels_count = self.getTopLevel(set_strings)
-				#print(f"Source Convert [3]: get top level ={top_level_head} set.lenght={len(set_strings)}.")
+				# print(f"Source Convert [3]: get top level ={top_level_head} set.lenght={len(set_strings)}.")
 				if top_level_head!="":
 					# заголовок верхнего уровня существует
-					#print(f"Source Convert [4]: top level head is exist. Split other strings.")
+					# print(f"Source Convert [4]: top level head is exist. Split other strings.")
 					# пытаемся разбить оставшиеся строки
 					self.split(set_strings)
 				else:
 					# заголовок верхнего уровня не существует, все строки помещаются в body
-					#print(f"Source Convert [5]: top level head is not exist. Add strings to body.")
+					# print(f"Source Convert [5]: top level head is not exist. Add strings to body.")
 					self.sourceToBody(set_strings)
 			else:
 				# такой заголовок не один, либо не в верхней строке, значит секцию нужно разбить на подсекции
 				self.title=""
 				self.title_id=self.rndID(mode='first-letter')
-				#print(f"Source Convert [6]: top level head is not one or top. Split all strings. {self.title_id}")
+				# print(f"Source Convert [6]: top level head is not one or top. Split all strings. {self.title_id}")
 				self.split(set_strings)
 		else:
 			# в наборе не найдены заголовки, значит весь набор становится телом секции
 			# не забываем про айдишник
 			self.title=""
 			self.title_id=self.rndID(mode='first-letter')
-			#print(f"Source Convert [7]: top level head is not exist. All Strings to body. {self.title_id}")
+			# print(f"Source Convert [7]: top level head is not exist. All Strings to body. {self.title_id}")
 			self.sourceToBody(set_strings)
 	def split(self, set_strings):
 		# на данном этапе у нас уже должен быть set_strings - набор элементов (строк) bs4
@@ -170,7 +170,7 @@ class NewSection():
 		top_level_head, levels_count = self.getTopLevel(set_strings)
 		string_list=[] # сюда набираем строки (набор)
 		section=None # временное хранилище секции
-		#print(f"Split [0]: top_level_head={top_level_head} set.lenght={len(set_strings)}")
+		# print(f"Split [0]: top_level_head={top_level_head} set.lenght={len(set_strings)}")
 		# перебираем теги
 		for tag in set_strings:
 			if "article__info_line" in tag['class']:
@@ -182,18 +182,18 @@ class NewSection():
 						self.date_time=el.text
 				# print("article__info_line")
 			elif tag.name==top_level_head:
-				#print(f"Split [1]: tag.name={tag.name} tag.text={tag.text}")
+				# print(f"Split [1]: tag.name={tag.name} tag.text={tag.text}")
 				if len(string_list)>0:
-					#print(f"Split [2]: create NewSection from {len(string_list)} strings.")
+					# print(f"Split [2]: create NewSection from {len(string_list)} strings.")
 					self.sections.append(NewSection(string_list))
 					string_list=[]
-				#print(f"Split [3]: Add tag '{tag.name}' to new set.")
+				# print(f"Split [3]: Add tag '{tag.name}' to new set.")
 				string_list.append(tag)
 			else:
-				#print(f"Split [4]: Add tag '{tag.name}' to new set.")
+				# print(f"Split [4]: Add tag '{tag.name}' to new set.")
 				string_list.append(tag)
 		if len(string_list)>0:
-			#print(f"Split [5]: create NewSection from {len(string_list)} strings.")
+			# print(f"Split [5]: create NewSection from {len(string_list)} strings.")
 			self.sections.append(NewSection(string_list))
 	def getFB2(self,include_images=True):
 		text=""
@@ -240,7 +240,8 @@ class NewSection():
 			text+="<p>"
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
-					text+=self.convertTag(el)
+					# print(f"From P: {el.name}")
+					text+=self.convertTag(el, include_images=include_images)
 				else:
 					text+=el.text
 			text+="</p>\n"
@@ -248,7 +249,7 @@ class NewSection():
 			text+="<emphasis>\n"
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
-					text+=self.convertTag(el)
+					text+=self.convertTag(el, include_images=include_images)
 				else:
 					text+=el.text
 			text+="\n</emphasis>\n"
@@ -256,7 +257,7 @@ class NewSection():
 			text+="<strong>\n"
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
-					text+=self.convertTag(el)
+					text+=self.convertTag(el, include_images=include_images)
 				else:
 					text+=el.text
 			text+="\n</strong>\n"
@@ -285,13 +286,46 @@ class NewSection():
 				text+=f'<p><a l:href="{i["src"].replace("&","&amp;")}">Видео</a></p>\n'
 			text+=f'<p><emphasis>{tag.figcaption.text}</emphasis></p>\n'
 		if tag.name=='a':
-			if 'href' in tag: text+=f'<a l:href="{tag["href"]}">'
+			try:
+				href_t=tag['href']
+			except:
+				href_t=None
+			if href_t!=None:
+				if '/away.php?to=' in tag['href']:
+					tag['href']=tag['href'].replace('/away.php?to=','').replace(f'%3A',':').replace(f'%2F','/')
+				text+=f'<a l:href="{tag["href"]}">'
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
-					text+=self.convertTag(el)
+					text+=self.convertTag(el, include_images=include_images)
 				else:
 					text+=el.text
-			if 'href' in tag: text+='</a>'
+			if href_t!=None: text+='</a>'
+		if tag.name=='ul':
+			li_dots=tag.find_all('li')
+			for dot in li_dots:
+				text+="<p>• "
+				if type(dot)==bs_el.Tag:
+					for el in dot.contents:
+						if type(el)==bs_el.Tag:
+							text+=self.convertTag(el, include_images=include_images)
+						else:
+							text+=el.text
+				else:
+					text+=dot.text
+				text+="</p>\n"
+		if tag.name=="pre":
+			for string in tag.contents:
+				text+="<p><code>"
+				if type(string)==bs_el.Tag:
+					for el in string.contents:
+						if type(el)==bs_el.Tag:
+							if el.name!="br":
+								text+=self.convertTag(el, include_images=include_images)
+						else:
+							text+=el.text
+				else:
+					text+=string.text
+				text+="</code></p>\n"
 		return text
 	def rndID(self, **args):
 		args['mode']=(args['mode'] if 'mode' in args else '')
@@ -432,12 +466,15 @@ def main(url_or_list,include_images=True):
 		if os.path.isfile(articles_file_name):
 			# если страница существует, загружаем из неё
 			print("Подбираем список статей из уже сохранённой страницы.")
+			time.sleep(0.1)
 			with open(articles_file_name,'r',encoding='utf-8') as file:
 				page=file.read()
 		else:
 			print("Страница со списком статей ещё не загружена.")
+			time.sleep(0.1)
 			page=getArticlesListPage(url_or_list)
 		print(f'Готовим суп.')
+		time.sleep(0.1)
 		# готовим суп
 		soup=BeautifulSoup(page,"html.parser")
 		body=soup.body
@@ -456,5 +493,13 @@ def main(url_or_list,include_images=True):
 
 if __name__=="__main__":
 	# url_or_list=f"https://vk.com/@qsplayer"
-	url_or_list=[f"https://vk.com/@flab20-propaganda-snova-strelyaet-sebe-v-kolenku"]
+	url_or_list=[
+		"https://vk.com/@qsplayer-qspider-v0130",
+		"https://vk.com/@qsplayer-qspider-v-0120-svodnaya-statya",
+		"https://vk.com/@qsplayer-novaya-versiya-qspider-0120",
+		"https://vk.com/@qsplayer-qspider-versii-0110",
+		"https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
+		"https://vk.com/@qsplayer-novaya-versiya-qspider-090",
+		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere",
+	]
 	main(url_or_list,include_images=True)

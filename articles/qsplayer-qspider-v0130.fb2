@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <book-title>qSpider v.0.13.0</book-title>
+   <annotation><p>Данный файл был автоматически сгенерирован скриптом из статьи на сайте vk.com, размещённой по адресу <a l:href="https://vk.com/@qsplayer-qspider-v0130">https://vk.com/@qsplayer-qspider-v0130</a>.</p></annotation>
+   <date value="2022-10-05">5 окт в 18:34</date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>
+    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <program-used>vk-articles-conv-to-fb2.py</program-used>
+   <date value="2022-10-05">5 окт в 18:34</date>
+   <id>F02A1916-90ED-0481-ABA7-8B83426DF904</id>
+   <version>1.1</version>
+   <history><p>Сгенерировано скриптом. Aleks Versus by</p></history>
+  </document-info>
+ </description>
+ <body><section id="avs-qspider-v-0-13-0">
+<title><p>qSpider v.0.13.0</p></title><section id="avs-AEFADDCF-D231-89DF-B92D-745142B79052">
+<p>Вышла новая версия плеера qSpider — <a l:href="https://github.com/QSPFoundation/qspider/releases/tag/v0.13.0">0.13.0</a></p>
+
+</section>
+<section id="avs-novye-fichi">
+<title><p>Новые фичи:</p></title><p>• msg и input больше не закрываются по клику вне модалки, улучшена поддержка клавиатуры — закрытие по Esc, кнопка в msg теперь фокусируется при открытию (соответственно нажатие пробела или Enter аналогично клику на кнопку)</p>
+<p>• в браузерную версию добавлена возможность открытия файла с списком игр или отдельной игры через URL — например <strong>
+<emphasis>
+https://qspfoundation.github.io/qspider/?config=https://qspfoundation.github.io/qspider/game/game.cfg
+</emphasis>
+
+</strong>
+ загрузит файл конфига, а <strong>
+<emphasis>
+https://qspfoundation.github.io/qspider/?game=https://qspfoundation.github.io/qspider/game/skazka/skazka.qsp
+</emphasis>
+
+</strong>
+ — то есть теперь можно просто выложить файл игры на какой-то сервер и запускать через <a l:href="https://qspfoundation.github.io/qspider">qspfoundation.github.io/qspider,</a> здесь пока есть ограничение — на сервере должна быть включена поддержка CORS (я занимаюсь возможностью обойти это ограничение)</p>
+<p>• добавлена поддержка запуска игры в текстовом формате qsp — для этого файл должен быть с расширением `.qsps`, поддерживаются кодировки utf-8 и utf-16le (qgen экспортирует в этой кодировке), но я рекомендую utf-8 поскольку файл будет значительно меньше по сравнению с utf-16le</p>
+<p>• для запуска плеера из qgen больше не нужен дополнительный bat файл</p>
+<p>• в десктоп плеере теперь доступна панель разработчика как в обычном браузере</p>
+
+</section>
+<section id="avs-ispravleny-sleduyuschie-bagi">
+<title><p>Исправлены следующие баги:</p></title><p>• сепаратор в меню выводился отдельным пунктом меню</p>
+<p>• исправлена поддержка 4-го недокументированного параметра в rgb функции отвечающего за альфа канал (прозрачность)</p>
+<p>• исправлен первый запуск (иногда при запуске из qgen не открывалась игра)</p>
+<p>• исправлена поддержка html — теперь все аттрибуты тегов должны сохраняться (раньше большая часть терялась при отрисовке)</p>
+<p>• исправлено отображение названия игры в toolbar — раньше длинное название ломало отображение</p>
+<p>• исправлен креш плеера при использование ряда тегов</p>
+
+</section>
+<section id="avs-v-protsesse-raboty-chast-koda-byla-vynesena-v-otdelnye-npm-pakety-dostupnye-bez">
+<title><p>В процессе работы часть кода была вынесена в отдельные npm пакеты, доступные без плеера</p></title><p>• <a l:href="https://www.npmjs.com/package/%40qsp/converters">@qsp/converters</a> — в пакете содержатся функции для конвертации из текстового формата qsp в бинарный и обратно</p>
+<p>• <a l:href="https://www.npmjs.com/package/%40qsp/cli">@qsp/cli</a> — консольная утилита для конвертации аналогичная txt2gam (требует наличия усnановленой NodeJS, но может запускаться на linux и mac)</p>
+<p>• <a l:href="https://www.npmjs.com/package/%40qsp/wasm-engine">@qsp/wasm-engine</a> — ядро QSP собранное в WebAssembly и JavaScript обвязка для запуска игр, пакет специально собран таким образом что его можно запускать как в браузере так на NodeJS сервере</p>
+<p>Оригинал статьи: <a l:href="https://ifhub.club/2022/10/05/qspider-0130.html">https://ifhub.club/2022/10/05/qspider-0130.html</a></p>
+
+</section>
+
+</section>
+</body>
+</FictionBook>

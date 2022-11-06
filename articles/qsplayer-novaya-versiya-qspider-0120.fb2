@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <book-title>Новая версия qSpider 0.12.0</book-title>
+   <annotation><p>Данный файл был автоматически сгенерирован скриптом из статьи на сайте vk.com, размещённой по адресу <a l:href="https://vk.com/@qsplayer-novaya-versiya-qspider-0120">https://vk.com/@qsplayer-novaya-versiya-qspider-0120</a>.</p></annotation>
+   <date value="2022-02-07">7 фев в 11:08</date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>
+    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <program-used>vk-articles-conv-to-fb2.py</program-used>
+   <date value="2022-02-07">7 фев в 11:08</date>
+   <id>C754A722-B1CD-BA55-6B79-8AACD3318E36</id>
+   <version>1.1</version>
+   <history><p>Сгенерировано скриптом. Aleks Versus by</p></history>
+  </document-info>
+ </description>
+ <body><section id="avs-novaya-versia-qspider-0-12-0">
+<title><p>Новая версия qSpider 0.12.0</p></title><section id="avs-AFCACFCC-A69E-1CE2-FABB-65BBAE281299">
+<p>Вышла новая версия плеера qSpider — <a l:href="https://github.com/QSPFoundation/qspider/releases/tag/v0.12.0">0.12.0</a></p>
+<p>В этой версии добавлена desktop версия плеера для 3 основных платформ— <a l:href="https://github.com/QSPFoundation/qspider/releases/download/v0.12.0/qSpider_0.12.0_x64.msi">Windows</a>— <a l:href="https://github.com/QSPFoundation/qspider/releases/download/v0.12.0/qSpider_0.12.0_x64.dmg">MacOs</a>— Linux — <a l:href="https://github.com/QSPFoundation/qspider/releases/download/v0.12.0/q-spider_0.12.0_amd64.deb">deb пакет</a> и <a l:href="https://github.com/QSPFoundation/qspider/releases/download/v0.12.0/q-spider_0.12.0_amd64.AppImage">AppImage формат</a></p>
+
+</section>
+<section id="avs-osnovnye-izmenenia-v-desktop-versii">
+<title><p>Основные изменения в desktop версии:</p></title><p>— возможность открыть qsp игру из папки (в отличии от web версии, где можно открыть только архив)— открытие игры через drag-n-drop файла игры на окно плеера— открытие игры через консоль (с помощью параметра <strong>
+--file
+</strong>
+)— загрузка файла конфига из папки с игрой— дополнительная секция в файле конфига для настройки окна desktop плеера— автоматической обновление desktop плеера при выходе новой версии</p>
+
+</section>
+<section id="avs-ispravleny-sleduyuschie-bagi">
+<title><p>Исправлены следующие баги:</p></title><p>— не поддерживался html в диалоге input— в aero режиме убран лишний отступ при HIDE_SCROLL_ARROWS=1— исправлен тег center для большего соответствия classic плееру</p>
+
+</section>
+<section id="avs-nastroyka-okna-desktop-pleera">
+<title><p>Настройка окна desktop плеера</p></title><p>В конфиг файле добавлена новая секция</p>
+<p><code>[game.window]
+width = 1280
+height = 960
+resizable = true
+minWidth = 1024
+minHeight = 768
+</code></p>
+<p><strong>
+width
+</strong>
+ и <strong>
+height
+</strong>
+ задают размер окна при старте игры, <strong>
+minWidth
+</strong>
+ и <strong>
+minHeight
+</strong>
+ дают возможность задать минимально возможные размеры при resize окна, а <strong>
+resizable
+</strong>
+ параметр позволяет запретить изменения размера в принципе (автоматически включается в aero режиме)</p>
+
+</section>
+<section id="avs-zapusk-pleera-iz-qgen">
+<title><p>Запуск плеера из qgen</p></title><p>Из-за бага в используемой библиотеке сделать плеер напрямую совместимым с qgen не получилось, надеюсь в ближайшее время баг будет исправлен и тогда плеер можно будет просто выбрать в настройках qgen.Пока же для запуска можно использовать простенький bat файл</p>
+<p><code>SET</code></p>
+<p><code> QSPIDER=C:\Program Files\qSpider\qSpider.exe
+SET DESTPATH=%~f1
+start "" "%QSPIDER%" "--file=%DESTPATH%"
+</code></p>
+<p>Меняем путь установки если он отличается от стандартного, сохраняем в виде <strong>
+.bat
+</strong>
+ файла и потом выбираем этот файл в настройках qgen.</p>
+
+</section>
+
+</section>
+</body>
+</FictionBook>

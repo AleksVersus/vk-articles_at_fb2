@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <book-title>Новая версия qSpider — 0.10.0</book-title>
+   <annotation><p>Данный файл был автоматически сгенерирован скриптом из статьи на сайте vk.com, размещённой по адресу <a l:href="https://vk.com/@qsplayer-novaya-versiya-qspider-0100">https://vk.com/@qsplayer-novaya-versiya-qspider-0100</a>.</p></annotation>
+   <date value="2022-01-01">1 июн 2021</date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>
+    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <program-used>vk-articles-conv-to-fb2.py</program-used>
+   <date value="2022-01-01">1 июн 2021</date>
+   <id>464956C1-A05A-C1B5-9876-8F8A16D190A1</id>
+   <version>1.1</version>
+   <history><p>Сгенерировано скриптом. Aleks Versus by</p></history>
+  </document-info>
+ </description>
+ <body><section id="avs-novaya-versia-qspider-0-10-0">
+<title><p>Новая версия qSpider — 0.10.0</p></title><section id="avs-EFEFACDE-77DC-A3F9-F7A8-D55E0948F2D6">
+<section id="avs-FCCFCDDF-DFB7-FB56-C5F1-6729F3A65E0A">
+<p>Вышла новая версия плеера qSpider — <a l:href="https://github.com/QSPFoundation/qspider/releases/tag/v0.10.0">0.10.0</a></p>
+<p>Добавление поддержки Аеро-игр немного затянулось и накопились баги, поэтому я решил выпустить новую версию пока без Аеро игр. Ну и сделал несколько фич, о которых часто спрашивали.</p>
+
+</section>
+<section id="avs-ispravleny-sleduyuschie-bagi">
+<title><p>Исправлены следующие баги:</p></title><p>— неправильно создавался файл сохранений размером > 64кб (любая более-менее крупная игра), загрузка такого сохранения в дальнейшем выдавала ошибку;— ошибка в QSP-коде не отображалась, если перед ней использовался оператор взаимодействующий с вводом-выводом (`msg`,`input`, `inclib`);— если аудио файл уже проигрывался, при вызове `play` он запускался снова;— отсутствовал hover на элементах списка игр и слотах сохранений.</p>
+
+</section>
+<section id="avs-novye-fichi">
+<title><p>Новые фичи:</p></title><p>— поддержка тега `video`;— подключение к игре дополнительных ресурсов — шрифты, css и js.</p>
+
+</section>
+
+</section>
+<section id="avs-podklyuchenie-k-igre-dopolnitelnykh-resursov">
+<title><p>Подключение к игре дополнительных ресурсов</p></title><p>В файле конфигурации добавилась новая секция с описанием дополнительных ресурсов:</p>
+<p><code>[game.resources]
+styles = [
+  "https://fonts.googleapis.com/css?family=Sofia",
+  "styles.css"
+]
+scripts = [
+  "script.js"
+]
+fonts = [
+  ["Shelter", "fonts/shelter.woff2"]
+]
+icon = "icon.png"
+</code></p>
+<p>В `<emphasis>
+styles
+</emphasis>
+` подключаем дополнительные css файлы — это могут быть как внешние ссылки, так и файлы из папки с игрой.</p>
+<p>В `<emphasis>
+scripts
+</emphasis>
+` подключаем JavaScript файлы. Поскольку нет возможности автоматически удалить JS код из памяти (при переключении на другую игру например) — это надо делать вручную. Дальше будет пример файла. Добавлена возможность создавать специальное событие на объекте `window` из кода игры с помощью `exec`.</p>
+<p><code>exec('qspider.event: test_event')
+exec('qspider.event: event_with_args[1, "test"]')
+</code></p>
+<p>Возможности вызвать код игры из JS пока нет — это в планах.</p>
+<p><code>// записываем весь наш код в специальную переменную, чтобы потом можно было удалить
+window.custom_game_script = {
+  // обработчик игровых событий
+  on_event(e) {
+    // в e.detail.name будет имя события (test_event или event_with_args из примере выше)
+    // в e.detail.args будeт массив дополнительных аргументов (в event_with_args это [1, "test"])
+  },
+  // обработчик выгрузки игры
+  unload() {
+    // отписываемся от событий
+    window.removeEventListener('game-unload', window.custom_game_script.unload);
+    window.removeEventListener("qspider-event", window.custom_game_script.on_event);
+    // удаляем переменную
+    </code></p>
+<p><code>delete</code></p>
+<p><code> window.custom_game_script;
+  },
+};
+// добавляем слушатель на специальное событие, вызываемое при выгрузке игры
+window.addEventListener('game-unload', window.custom_game_script.unload);
+// добавляем слушатель на событие, вызываемое из игры через exec
+window.addEventListener("qspider-event", window.custom_game_script.on_event);
+</code></p>
+<p>В `<emphasis>
+fonts
+</emphasis>
+` подключаем дополнительные шрифты. Рекомендуемый формат — woff2, он поддерживается всеми современными браузерами. В сети полно онлайн конверторов из ttf в woff2.Если у шрифта есть Bold, Italic и BoldItalic варианты в отдельных файлах, то подключение будет выглядеть вот так</p>
+<p><code>fonts</code></p>
+<p><code> = [
+  ["Shelter", "fonts/shelter.woff2"],
+  ["Shelter", "fonts/shelter-bold.woff2", "bold"],
+  ["Shelter", "fonts/shelter-italic.woff2", "normal", "italic"],
+  ["Shelter", "fonts/shelter-bold-italic.woff2", "bold", "italic"]
+]
+</code></p>
+<p>`<emphasis>
+icon
+</emphasis>
+` дает возможность заменить иконку в табке браузера, т.н. favicon. По умолчанию там лого QSP.</p>
+<p>Автор оригинальной статьи <strong>
+Werewolf.
+</strong>
+</p>
+<p>Статья доступна по ссылке: <a l:href="https://ifhub.club/2021/05/23/qspider-0100.html">https://ifhub.club/2021/05/23/qspider-0100.html</a></p>
+
+</section>
+
+</section>
+</body>
+</FictionBook>

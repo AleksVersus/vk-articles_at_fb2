@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <book-title>qSpider версии 0.11.0</book-title>
+   <annotation><p>Данный файл был автоматически сгенерирован скриптом из статьи на сайте vk.com, размещённой по адресу <a l:href="https://vk.com/@qsplayer-qspider-versii-0110">https://vk.com/@qsplayer-qspider-versii-0110</a>.</p></annotation>
+   <date value="2022-01-01">23 окт 2021</date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>
+    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <program-used>vk-articles-conv-to-fb2.py</program-used>
+   <date value="2022-01-01">23 окт 2021</date>
+   <id>70F07B5F-F24C-9CDE-88AC-030064ACA974</id>
+   <version>1.1</version>
+   <history><p>Сгенерировано скриптом. Aleks Versus by</p></history>
+  </document-info>
+ </description>
+ <body><section id="avs-qspider-versii-0-11-0">
+<title><p>qSpider версии 0.11.0</p></title><section id="avs-EFDDCECB-889C-3863-8683-230A2499889D">
+<section id="avs-EFFFBACB-23AE-F413-3E3B-31D3B6B3578C">
+<p>Вышла новая версия плеера qSpider — <a l:href="https://github.com/QSPFoundation/qspider/releases/tag/v0.11.0">0.11.0</a>Демо — <a l:href="https://qspfoundation.github.io/qspider/">https://qspfoundation.github.io/qspider/</a></p>
+
+</section>
+<section id="avs-novye-fichi">
+<title><p>Новые фичи:</p></title><p>• поддержка игр в AeroQSP формате</p>
+<p>• поддержка <emphasis>
+style
+</emphasis>
+ атрибута в тегах</p>
+<p>• к основным элементам интерфейса добавлен <emphasis>
+data-qsp
+</emphasis>
+ атрибут (<emphasis>
+data-qsp=«main»
+</emphasis>
+, <emphasis>
+data-qsp=«actions»
+</emphasis>
+ и т.д.)</p>
+
+</section>
+<section id="avs-ispravleny-sleduyuschie-bagi">
+<title><p>Исправлены следующие баги:</p></title><p>• кнопки сохранения/загрузки теперь будут спрятаны, если в игре установлен<emphasis>
+ nosave=1
+</emphasis>
+</p>
+<p>• исправлен <emphasis>
+align
+</emphasis>
+ атрибут в таблицах</p>
+<p>• исправлен вызов <emphasis>
+onactsel
+</emphasis>
+ (в прошлых версия поведение отличалось от классического плеера)</p>
+
+</section>
+
+</section>
+<section id="avs-podderzhka-igr-v-aeroqsp-formate">
+<title><p>Поддержка игр в AeroQSP формате</p></title><section id="avs-DFDEAFDA-6354-62CC-C58E-70532264E1B7">
+<p>Собственно этот функционал так и затянул выход новой версии. Я старался добиться, чтобы как можно больше AeroQSP игр можно было запускать без дополнительных изменений самой игры. Оказалось что HTML движок в флеш версии AeroQSP достаточно специфичен и не всегда совпадает с тем как работает браузер.</p>
+
+</section>
+<section id="avs-vot-spisok-osobennostey-i-otlichy">
+<title><p>Вот список особенностей и отличий:</p></title><p>• несколько игр использовали синтаксис, который поменялся в 5.8.0 (порядок аргументов в <emphasis>
+INSTR
+</emphasis>
+, <emphasis>
+ARRCOMP
+</emphasis>
+, <emphasis>
+ARRPOS
+</emphasis>
+) и в qSpider будут выдавать ошибку о несовпадении типов данных</p>
+<p>• в AeroQSP шрифты подключались в формате swf, использовать такой формат больше нет возможности, поэтому если игра использует нестандартные шрифты — их необходимо будет подключать через файл конфига в секции <emphasis>
+game.resources
+</emphasis>
+</p>
+<p>• в qSpider не поддерживаются эффекты<emphasis>
+ pixels
+</emphasis>
+, <emphasis>
+h_blinds
+</emphasis>
+ и <emphasis>
+v_blinds
+</emphasis>
+, остальные эффекты могут немного отличаться от того как работала флеш версия</p>
+<p>• не поддерживается переменная <emphasis>
+SCROLL_SPEED
+</emphasis>
+ (хотя я вроде и не видел чтобы она использовалась хоть в одной игре)</p>
+<p>• обработка клика в флеше отличается от браузера — если на блоке нет обработчика то он не перехватывает клик даже если размещен поверх другого, в ряде игр это привело к тому что не спрятанные панельки (пустые и не видимые) в qSpider блокируют клики по линкам под ними. Пример — игра Новогодние сказки где кнопка Играть почти полностью перекрыта пустой на этот момент панелькой действий. Лечится небольшими изменениями игры — отключением неиспользуемых панелей.</p>
+<p>• в флеше тег <emphasis>
+center
+</emphasis>
+ внутри таблиц растягивает таблицу на всю ширину, при этом еще размеры ячеек без явно указанной ширины в этом случае считаются не как в браузере, чаще всего заметно в действиях — для форматирования по умолчанию используется таблица, и если в названии действия использовать тег center, то в флеш версии текст будет по середине панели, а в qSpider — нет. Лечиться добавлением <emphasis>
+width=100%
+</emphasis>
+ в такую таблицу. Я не смог сделать это на уровне плеера поскольку в ряде игр это ломало отображение.</p>
+
+</section>
+<section id="avs-primer-podklyuchenia">
+<title><p>Пример подключения</p></title><p>Для подключения AeroQSP игры через конфиг необходимо в основной секции добавить <emphasis>
+mode = «aero»
+</emphasis>
+, и если используется размер игры отличающийся от дефолтного 800х600 — добавить секцию с размерами</p>
+<p>Автор оригинальной статьи <strong>
+Werewolf
+</strong>
+.</p>
+<p>Оригинал доступен по ссылке: <strong>
+<a l:href="https://ifhub.club/2021/10/22/qspider-0110.html%23comment">https://ifhub.club/2021/10/22/qspider-0110.html#comment</a>
+</strong>
+</p>
+
+</section>
+
+</section>
+
+</section>
+</body>
+</FictionBook>

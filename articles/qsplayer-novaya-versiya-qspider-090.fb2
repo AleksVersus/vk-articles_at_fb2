@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <book-title>Новая версия qSpider — 0.9.0</book-title>
+   <annotation><p>Данный файл был автоматически сгенерирован скриптом из статьи на сайте vk.com, размещённой по адресу <a l:href="https://vk.com/@qsplayer-novaya-versiya-qspider-090">https://vk.com/@qsplayer-novaya-versiya-qspider-090</a>.</p></annotation>
+   <date value="2022-01-01">19 окт 2020</date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <genre>nonf_publicism</genre>
+<genre>nonf_criticism</genre>
+   <author>
+    <first-name>Клуб любителей текстовых игр на QSP</first-name>
+    <last-name></last-name>
+   </author>
+   <program-used>vk-articles-conv-to-fb2.py</program-used>
+   <date value="2022-01-01">19 окт 2020</date>
+   <id>6F5646D2-C86E-BEE8-44B8-5E46D533BC56</id>
+   <version>1.1</version>
+   <history><p>Сгенерировано скриптом. Aleks Versus by</p></history>
+  </document-info>
+ </description>
+ <body><section id="avs-novaya-versia-qspider-0-9-0">
+<title><p>Новая версия qSpider — 0.9.0</p></title><section id="avs-AFEBEAEB-60B1-1F89-6D65-711E61598CB1">
+<p><strong>
+Вышла новая версия плеера qSpider
+</strong>
+ — <a l:href="https://github.com/QSPFoundation/qspider/releases/tag/v0.9.0">0.9.0</a></p>
+<p><strong>
+Демо
+</strong>
+ — <a l:href="https://qspfoundation.github.io/qspider/">https://qspfoundation.github.io/qspider/</a></p>
+<p>В предыдущей версии, <strong>
+0.8.1
+</strong>
+, помимо небольшого баг-фикса и добавления горячих клавиш в плеер, появилась возможность у автора игры добавлять собственные сочетания горячих клавиш.</p>
+<p><a l:href="http://qsp.su/components/com_agora/img/members/2512/demo.zip">Архив с примером</a></p>
+<p>Для добавления сочетания клавиш в игру необходимо прописать дополнительную секцию.</p>
+<p><strong>
+
+</strong>
+</p>
+<p> в файле конфигурации <strong>
+game.cfg.
+</strong>
+В этой секции ключом будет сочетание клавиш, а значением — название локации в игре, которая будет вызываться при нажатии.</p>
+
+</section>
+<section id="avs-podderzhivaemye-klavishi">
+<title><p>Поддерживаемые клавиши:</p></title><p>Модификаторы</p>
+<p>• <strong>
+<emphasis>
+shift
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+ctrl
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+alt
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+meta
+</emphasis>
+
+</strong>
+ — для поддержки на macOs лучше использовать этот модификатор вместо <strong>
+<emphasis>
+ctrl
+</emphasis>
+
+</strong>
+</p>
+<p>Специальные клавиши</p>
+<p>• <strong>
+<emphasis>
+backspace
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+tab
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+enter
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+capslock
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+esc
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+space
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+pageup
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+pagedown
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+end
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+home
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+left
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+up
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+right
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+down
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+ins
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+del
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+plus
+</emphasis>
+
+</strong>
+</p>
+<p>• <strong>
+<emphasis>
+f1-f19
+</emphasis>
+
+</strong>
+</p>
+<p>Остальные клавиши можно определять просто по имени <strong>
+<emphasis>
+a
+</emphasis>
+
+</strong>
+, <strong>
+<emphasis>
+$
+</emphasis>
+
+</strong>
+, <strong>
+<emphasis>
+*
+</emphasis>
+
+</strong>
+, или <strong>
+<emphasis>
+=
+</emphasis>
+
+</strong>
+</p>
+<p>Определять можно:</p>
+<p>• нажатие единичной клавиши — например<strong>
+
+</strong>
+</p>
+<p>• одновременное нажатие — перечисляем клавиши через <strong>
+<emphasis>
++
+</emphasis>
+
+</strong>
+, например<strong>
+
+</strong>
+</p>
+<p>• последовательное нажатие — перечисляем через пробел, например <strong>
+
+</strong>
+</p>
+<p>В новой версии <strong>
+0.9.0
+</strong>
+ появилась возможность определить список игр в файле конфигурации плеера. Если было определено несколько игр — на старте плеера будет предложена возможность выбрать игру из списка. И в плеере добавится дополнительная кнопка, чтобы диалог выбора игры можно было вызвать позже. Если игра была определена всего одна — она автоматически запустится.</p>
+<p>Также добавлена возможность загружать игры по внешней ссылке (раньше плеер работал только с одной папкой). Здесь необходимо помнить о ряде ограничений связанных с ограничениями браузера:</p>
+<p>• с https страницы нельзя загрузить http ссылку</p>
+<p>• у сервера, где находится игра, должны быть настроены <a l:href="https://developer.mozilla.org/ru/docs/Web/HTTP/CORS">CORS заголовки</a></p>
+<p>В связи с этим немного поменялся формат файла конфигурации</p>
+<p><code>[[game]]
+id = "7466df3b-4236-4668-b0df-2a70477da67b"
+title = "Сказочка на ночь"
+description = """Ночью в полнолуние закрывай засов.
+Не ходи к колодцу, коль услышал зов.
+Чей бы голос ни был - дева ли, старик
+Не ходи к колодцу, коль услышал крик ... (с)"""
+file = "skazka/skazka.qsp"
+</code></p>
+<p>• перед описанием новой игры необходимо добавлять заголовок <strong>
+[[game]]
+</strong>
+</p>
+<p>• добавлено необязательное поле <strong>
+description
+</strong>
+ — оно используется в списке игр</p>
+<p>• поле <strong>
+folder
+</strong>
+ удалено, а в поле <strong>
+file
+</strong>
+ нужно прописывать путь относительно папки с файлом конфигурации, или же он должен содержать внешнюю ссылку, например: <strong>
+
+</strong>
+</p>
+<p>• для определения горячих клавиш игры необходимо использовать заголовок <strong>
+[game.hotkeys]
+</strong>
+ (раньше он был <strong>
+[hotkeys]
+</strong>
+)</p>
+<p>Автор оригинальных статей: <strong>
+Werewolf
+</strong>
+.</p>
+<p><strong>
+Оригиналы статей:
+</strong>
+ </p>
+<p>• <a l:href="https://ifhub.club/2020/10/18/qspider-090.html">https://ifhub.club/2020/10/18/qspider-090.html</a></p>
+<p>• <a l:href="https://ifhub.club/2020/10/11/qspider-hotkeys.html">https://ifhub.club/2020/10/11/qspider-hotkeys.html</a></p>
+
+</section>
+
+</section>
+</body>
+</FictionBook>
