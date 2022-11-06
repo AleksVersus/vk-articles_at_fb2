@@ -63,7 +63,7 @@ if __name__=="__main__":
 		"https://vk.com/@qsplayer-qspider-versii-0110",
 		"https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
 		"https://vk.com/@qsplayer-novaya-versiya-qspider-090",
-		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere",
+		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere"
 	]
 	main(url_or_list,include_images=True)
 ```
