@@ -326,6 +326,13 @@ class NewSection():
 				else:
 					text+=string.text
 				text+="</code></p>\n"
+		if not tag.name in ('pre', 'ul', 'a', 'figure', 'strong', 'em', 'p'):
+			for el in tag.contents:
+				if type(el)==bs_el.Tag:
+					# print(f"From P: {el.name}")
+					text+=self.convertTag(el, include_images=include_images)
+				else:
+					text+=el.text
 		return text
 	def rndID(self, **args):
 		args['mode']=(args['mode'] if 'mode' in args else '')
@@ -500,6 +507,6 @@ if __name__=="__main__":
 		"https://vk.com/@qsplayer-qspider-versii-0110",
 		"https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
 		"https://vk.com/@qsplayer-novaya-versiya-qspider-090",
-		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere",
+		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere"
 	]
 	main(url_or_list,include_images=True)
