@@ -313,6 +313,21 @@ class NewSection():
 				else:
 					text+=dot.text
 				text+="</p>\n"
+		if tag.name=='ol':
+			li_dots=tag.find_all('li')
+			count = 0
+			for dot in li_dots:
+				text+=f"<p>{count+1}. "
+				if type(dot)==bs_el.Tag:
+					for el in dot.contents:
+						if type(el)==bs_el.Tag:
+							text+=self.convertTag(el, include_images=include_images)
+						else:
+							text+=el.text
+				else:
+					text+=dot.text
+				text+="</p>\n"
+				count += 1
 		if tag.name=="pre":
 			for string in tag.contents:
 				text+="<p><code>"
@@ -501,12 +516,6 @@ def main(url_or_list,include_images=True):
 if __name__=="__main__":
 	# url_or_list=f"https://vk.com/@qsplayer"
 	url_or_list=[
-		"https://vk.com/@qsplayer-qspider-v0130",
-		"https://vk.com/@qsplayer-qspider-v-0120-svodnaya-statya",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-0120",
-		"https://vk.com/@qsplayer-qspider-versii-0110",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-090",
-		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere"
+		"https://vk.com/@flab20-chernosotenstvo-fashizm-ili-esche-net"
 	]
 	main(url_or_list,include_images=True)
