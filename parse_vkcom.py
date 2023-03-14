@@ -341,7 +341,22 @@ class NewSection():
 				else:
 					text+=string.text
 				text+="</code></p>\n"
-		if not tag.name in ('pre', 'ul', 'a', 'figure', 'strong', 'em', 'p'):
+		if tag.name=="blockquote":
+			text+="<cite>"
+			for string in tag.contents:
+				text+="<p>"
+				if type(string)==bs_el.Tag:
+					for el in string.contents:
+						if type(el)==bs_el.Tag:
+							if el.name!="br":
+								text+=self.convertTag(el, include_images=include_images)
+						else:
+							text+=el.text
+				else:
+					text+=string.text
+				text+="</p>\n"
+			text+='</cite>'
+		if not tag.name in ('pre', 'ul', 'a', 'figure', 'strong', 'em', 'p', 'ol', 'blockquote'):
 			for el in tag.contents:
 				if type(el)==bs_el.Tag:
 					# print(f"From P: {el.name}")
@@ -516,6 +531,6 @@ def main(url_or_list,include_images=True):
 if __name__=="__main__":
 	# url_or_list=f"https://vk.com/@qsplayer"
 	url_or_list=[
-		"https://vk.com/@flab20-chernosotenstvo-fashizm-ili-esche-net"
+		"https://vk.com/@flab20-chto-takoe-reakciya"
 	]
 	main(url_or_list,include_images=True)
