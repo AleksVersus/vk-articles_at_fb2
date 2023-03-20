@@ -560,5 +560,22 @@ def main():
 	articles = ArtcilesToFB2(url_or_list, include_images=True)
 	articles.convert_to_fb2()
 
+def get_links_from_files(folder_path:str):
+	"""
+		from fb2 (getted from articles in vk) get links on articles
+	"""
+	files_paths = os.listdir(folder_path)
+	links_list = []
+	for file in files_paths:
+		file = f"{folder_path}\\{file}"
+		if os.path.isfile(file) and os.path.splitext(file)[1]=='.fb2':
+			with open(file, 'r', encoding='utf-8') as f:
+				text = f.read()
+			soup = BeautifulSoup(text, 'lxml')
+			annotation = soup.find('annotation')
+			links_list.append(annotation.p.a['l:href'])
+	print(links_list)
+
 if __name__=="__main__":
-	main()
+	# main()
+	get_links_from_files('.\\articles')
