@@ -315,7 +315,7 @@ class NewSection():
 				text+="</p>\n"
 		if tag.name=='ol':
 			li_dots=tag.find_all('li')
-			count = 0
+			count = (int(tag['start'])-1 if tag['start'] else 0)
 			for dot in li_dots:
 				text+=f"<p>{count+1}. "
 				if type(dot)==bs_el.Tag:
@@ -531,6 +531,6 @@ def main(url_or_list,include_images=True):
 if __name__=="__main__":
 	# url_or_list=f"https://vk.com/@qsplayer"
 	url_or_list=[
-		"https://vk.com/@flab20-chto-takoe-reakciya"
+		"https://vk.com/@flab20-georgii-dimitrov-byl-prav-ch2"
 	]
 	main(url_or_list,include_images=True)
