@@ -48,26 +48,26 @@ pip install requests
 
 ```python
 def main():
-	url_or_list="https://vk.com/@qsplayer"
-	articles = vtf.ArtcilesToFB2(url_or_list, include_images=True)
-	articles.convert_to_fb2()
+  url_or_list="https://vk.com/@qsplayer"
+  articles = vtf.ArtcilesToFB2(url_or_list, include_images=True)
+  articles.convert_to_fb2()
 ```
 
 Либо вы можете поместить в эту переменную список url-адресов на интересующие вас статьи:
 
 ```python
 def main():
-	url_or_list=[
-		"https://vk.com/@qsplayer-qspider-v0130",
-		"https://vk.com/@qsplayer-qspider-v-0120-svodnaya-statya",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-0120",
-		"https://vk.com/@qsplayer-qspider-versii-0110",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
-		"https://vk.com/@qsplayer-novaya-versiya-qspider-090",
-		"https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere"
-	]
-	articles = vtf.ArtcilesToFB2(url_or_list, include_images=True)
-	articles.convert_to_fb2()
+  url_or_list=[
+    "https://vk.com/@qsplayer-qspider-v0130",
+    "https://vk.com/@qsplayer-qspider-v-0120-svodnaya-statya",
+    "https://vk.com/@qsplayer-novaya-versiya-qspider-0120",
+    "https://vk.com/@qsplayer-qspider-versii-0110",
+    "https://vk.com/@qsplayer-novaya-versiya-qspider-0100",
+    "https://vk.com/@qsplayer-novaya-versiya-qspider-090",
+    "https://vk.com/@qsplayer-qspider-pleer-dlya-zapuska-qsp-igr-v-brauzere"
+  ]
+  articles = vtf.ArtcilesToFB2(url_or_list, include_images=True)
+  articles.convert_to_fb2()
 ```
 
 При создании объекта `vtf.ArtcilesToFB2` можно передавать параметр `include_images` (по умолчанию передаётся `True`), который определяет, нужно ли включать в конечный файл fb2 изображения из статьи. Если передано значение `False`, вместо изображений в статьях будут только ссылки на эти изображения. Это экономит место на вашем жёстком диске и время, требуемое на работу скрипта.
