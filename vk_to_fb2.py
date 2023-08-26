@@ -577,5 +577,5 @@ def get_links_from_files(folder_path:str):
 	print(links_list)
 
 if __name__=="__main__":
-	# main()
-	get_links_from_files('.\\articles')
+	main()
+	# get_links_from_files('.\\articles')
